@@ -1,0 +1,319 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+
+
+struct tranzactie
+{
+
+///structura in care sunt salvate tranzactiile
+
+ int plata;
+ float valoare,balanta;
+ int zi, luna, an;
+ char desc[50];
+}operatie[50];
+
+
+int valid_zi(int zi)
+{
+/// primeste o variabila de tipul 'int' si verifica daca este o zi dintr-o luna
+        if(zi >31 || zi <=0)
+                return 0;
+        else
+                return 1;
+}
+
+int valid_luna(int luna)
+{
+/// primeste o variabile de tipul 'int' si verifica daca este o luna dintr-un an
+        if(luna <1 || luna >12)
+                return 0;
+        else
+                return 1;
+}
+
+int valid_an(int an)
+{
+/// primeste o variabila de tipul 'int' si verifica daca este un an intre 1990 si 2050
+        if(an<1990 || an >2050)
+                return 0;
+        else
+                return 1;
+}
+
+int valid_valoare(float valoare)
+{
+///primeste o variabila de tip 'float' si verifica daca este mai mare ca 0
+        if(valoare <=0)
+                return 0;
+        else
+                return 1;
+}
+
+int valid_plata(int plata)
+{
+/// primeste o variabila de tip 'int' si verifica daca are una dintre cele doua valori(1,2)
+        if(plata <1 || plata >2)
+                return 0;
+        else
+                return 1;
+}
+
+int valid_command(int command)
+{
+///primeste o variabila de tip 'int' si verifica daca se afla in intervalul[1,5]
+        if(command<1 || command >5)
+                return 0;
+        else
+                return 1;
+}
+float tranzactie_noua(int index, float balanta)
+{
+///functie care citeste si adauga o noua tranzactie
+        int command, zi, luna, an, plata;
+        float valoare;
+        printf("\n1.Plata \n2.Incasare\n");
+        scanf("%d",&plata);
+        while(valid_plata(plata) ==0)
+        {
+                printf("\n1.Plata \n2.Incasare\n");
+                scanf("%d",&plata);
+        }
+        if(plata==1)
+                operatie[index].plata=1;
+        else
+                operatie[index].plata=0;
+        printf("\nIntroduceti valoarea:\n");
+        scanf("%f",&valoare);
+        while(valid_valoare(valoare) == 0)
+                {
+                        printf("\nIntroduceti valoarea:\n");
+                        scanf("%f",&valoare);
+                }
+
+        printf("\nIntroduceti ziua:\n");
+        scanf("%d",&zi);
+        while(valid_zi(zi) == 0)
+        {
+                printf("\nIntroduceti ziua:\n");
+                scanf("%d",&zi);
+        }
+
+        printf("\nIntroduceti luna: \n");
+        scanf("%d", &luna);
+        while(valid_luna(luna) ==0 )
+        {
+                printf("\nIntroduceti luna: \n");
+                scanf("%d", &luna);
+        }
+
+        printf("\nIntroduceti anul \n");
+        scanf("%d", &an);
+        while(valid_an(an) == 0)
+        {
+                printf("\nIntroduceti anul \n");
+                scanf("%d", &an);
+
+        }
+
+        if(operatie[index].plata== 1)
+        {
+                if(balanta-valoare >=0)
+                {
+                        balanta = balanta - valoare;
+                        operatie[index].zi = zi;
+                        operatie[index].luna = luna;
+                        operatie[index].an = an;
+                        operatie[index].valoare = valoare;
+                        printf("\nIntroduceti o descriere\n");
+                        scanf("%s",operatie[index].desc);
+                }
+                else
+                {
+                        printf("\nFonduri insuficiente!\n");
+                        index--;
+                        operatie[0].zi = 1;
+                        return balanta;
+                }
+        }
+        else
+        {
+                operatie[index].zi = zi;
+                operatie[index].luna = luna;
+                operatie[index].an = an;
+                operatie[index].valoare = valoare;
+                balanta = balanta + operatie[index].valoare;
+                operatie[index].balanta = balanta;
+
+        printf("\nIntroduceti o descriere\n");
+        scanf("%s",operatie[index].desc);
+        }
+        operatie[0].zi=0;
+        return balanta;
+}
+
+void afisare_tranzactie( int i)
+{
+///functie care afiseaza pe ecran o singura tranzactie
+        printf(" Suma:");
+                printf("%g", operatie[i].valoare);
+                printf(" Ziua:");
+                printf("%d", operatie[i].zi);
+                printf(" Luna:");
+                printf("%d",operatie[i].luna);
+                printf(" Anul:");
+                printf("%d",operatie[i].an);
+                printf(" Balanta:");
+                printf("%g",operatie[i].balanta);
+                printf(" Descriere:");
+                printf("%s", operatie[i].desc);
+                printf("\n");
+
+}
+void afisare_tranzactii(int index)
+{
+///functie ce afiseaza pe ecran toate tranzactiile inregistrate
+        for(int i=1;i<index;i++)
+        {
+                printf("%d",i);
+                afisare_tranzactie(i);
+        }
+
+}
+
+void afisare_balanta(float balanta)
+{
+///functie ce afiseaza balanta
+        printf("\nBalanta contului este: ");
+        printf("%f", balanta);
+        printf("\n\n");
+}
+
+void afisare_perioada(int index)
+{
+///functie ce afiseaza pe ecran toate tranactiile dintr-o perioada de timp cititia de la tastatura
+        int zi_inceput, luna_inceput, an_inceput, zi_final, luna_final, an_final;
+        printf("\nIntroduceti data de inceput a perioadei:");
+        printf("\nIntroduceti ziua:\n");
+        scanf("%d",&zi_inceput);
+        while(valid_zi(zi_inceput) == 0)
+        {
+                printf("\nIntroduceti ziua:\n");
+                scanf("%d",&zi_inceput);
+        }
+
+        printf("\nIntroduceti luna: \n");
+        scanf("%d", &luna_inceput);
+        while(valid_luna(luna_inceput) == 0)
+        {
+                printf("\nIntroduceti luna: \n");
+                scanf("%d", &luna_inceput);
+        }
+
+        printf("\nIntroduceti anul \n");
+        scanf("%d", &an_inceput);
+        while(valid_an(an_inceput) == 0)
+        {
+                printf("\nIntroduceti anul \n");
+                scanf("%d", &an_inceput);
+        }
+
+        printf("Introduceti data de sfarsit a perioadei:");
+        printf("\nIntroduceti ziua:\n");
+        scanf("%d",&zi_final);
+        while(valid_zi(zi_final) == 0)
+        {
+                printf("\nIntroduceti ziua:\n");
+                scanf("%d",&zi_final);
+        }
+
+        printf("\nIntroduceti luna: \n");
+        scanf("%d", &luna_final);
+        while(valid_luna(luna_final) == 0)
+        {
+                printf("\nIntroduceti luna: \n");
+                scanf("%d", &luna_final);
+        }
+
+        printf("\nIntroduceti anul \n");
+        scanf("%d", &an_final);
+        while(valid_an(an_final) == 0)
+        {
+                printf("\nIntroduceti anul \n");
+                scanf("%d", &an_final);
+        }
+
+        for(int i=1;i<=index;i++)
+                {
+                int an = operatie[i].an;
+                int luna = operatie[i].luna;
+                int zi = operatie[i].zi;
+                        if( an < an_final && an > an_inceput)
+                                afisare_tranzactie(i);
+                        else if(an==an_final || an == an_inceput)
+                                {
+                                        if( luna < luna_final && luna >luna_inceput)
+                                                afisare_tranzactie(i);
+                                        else if(luna == luna_final || luna == luna_inceput)
+                                                {
+                                                        if(zi <zi_final && zi >zi_inceput)
+                                                        afisare_tranzactie(i);
+                                                }
+                                }
+                }
+}
+
+int main()
+{
+        int command;
+        int index_tranzactie = 1;
+        float balanta =0;
+        int ok=1;
+
+        while(ok==1)
+        {                                               /// meniul
+        printf("\nSelectati o comanda:\n");
+        printf("1.Adaugati o tranzactie\n");
+        printf("2.Afisare tranzactii\n");
+        printf("3.Afisare balanta\n");
+        printf("4.Afisare tranzactii pe o perioada\n");
+        printf("5.Inchidere program\n");
+        scanf("%d",&command);
+
+
+        while(valid_command(command) == 0)
+        {
+                printf("Comanda invalida. Selectati o comanda");
+                scanf("%d",&command);
+        }
+
+
+        switch(command)
+        {
+                case 1:
+                {
+
+                balanta = tranzactie_noua(index_tranzactie, balanta);
+                        index_tranzactie++;
+                        index_tranzactie = index_tranzactie - operatie[0].zi;
+                        break;
+                }
+                case 2:
+                        afisare_tranzactii(index_tranzactie);
+                        break;
+                case 3:
+                        afisare_balanta(balanta);
+                        break;
+                case 4:
+                        afisare_perioada(index_tranzactie);
+                        break;
+                case 5:
+                        ok=0;
+
+
+        }
+        }
+}
+~           
